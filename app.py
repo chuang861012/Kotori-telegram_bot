@@ -25,22 +25,22 @@ def handle_message(message):
     text = message.text
     if text:
         if re.match('^/help',text):
-            helpstr = ('/help - 指令清單\n'
-                       '/author - 搜尋裏漫作者\n'
-                       '/circle - 搜尋裏漫社團\n'
-                       '/book - 搜尋書籍(博客來、金石堂、讀冊)\n'
-                       '/huolu - 小鳥嚴選活路')
+            helpstr = ('/help - 指令清單\n' # command list
+                       '/author - 搜尋裏漫作者\n' #search for adult manga author
+                       '/circle - 搜尋裏漫社團\n' #search for adult manga circle
+                       '/book - 搜尋書籍(博客來、金石堂、讀冊)\n' # search for books in bookstore(books,kingstone,taaze)
+                       '/huolu - 小鳥嚴選活路') # get random adult manga
             bot.sendMessage(message.chat.id,helpstr)
         elif re.match('^/start',text):
-            bot.sendMessage(message.chat.id,"現在並不是結束，結束甚至還沒有開始。但是現在可能是序幕的結束。\n - 溫斯頓·邱吉爾")
+            bot.sendMessage(message.chat.id,"現在並不是結束，結束甚至還沒有開始。但是現在可能是序幕的結束。\n - 溫斯頓·邱吉爾") # a random string
         elif re.match('^/author',text):
-            bot.sendMessage(message.chat.id, "請輸入作者名",reply_markup=json.dumps({"force_reply":True}))
+            bot.sendMessage(message.chat.id, "請輸入作者名",reply_markup=json.dumps({"force_reply":True})) # please enter the author's name
         elif re.match('^/circle',text):
-            bot.sendMessage(message.chat.id, "請輸入社團名",reply_markup=json.dumps({"force_reply":True}))
+            bot.sendMessage(message.chat.id, "請輸入社團名",reply_markup=json.dumps({"force_reply":True})) # please enter the circle's name
         elif re.match('^/book',text):
-            bot.sendMessage(message.chat.id, "請輸入ISBN或正確書名",reply_markup=json.dumps({"force_reply":True}))
+            bot.sendMessage(message.chat.id, "請輸入ISBN或正確書名",reply_markup=json.dumps({"force_reply":True})) # please enter the ISBN or name of the book
         elif re.match('^/huolu',text):
-            bot.sendMessage(message.chat.id, "小鳥嚴選活路")
+            bot.sendMessage(message.chat.id, "小鳥嚴選活路") # random adult manga
             huolu(message)
         elif message.reply_to_message:
             if re.match('^請輸入作者名',message.reply_to_message.text):
@@ -56,7 +56,7 @@ def handle_message(message):
 def author(message,text):
     author_data = searchAuthor(text)
     if author_data == None:
-        bot.sendMessage(message.chat.id, "找不到作者 : *{}*".format(text),parse_mode="Markdown")
+        bot.sendMessage(message.chat.id, "找不到作者 : *{}*".format(text),parse_mode="Markdown") # can't find author
     elif 'error' in author_data:
         bot.sendMessage(message.chat.id,"Error : {}".format(author_data['error']))
     else:
@@ -65,7 +65,7 @@ def author(message,text):
             bot.sendMessage(message.chat.id,"Error : {}".format(links['error']))
         else:
             if len(links) == 0:
-                bot.sendMessage(message.chat.id, "作者 : *{}*，無相關資料".format(author_data['name']),parse_mode="Markdown")
+                bot.sendMessage(message.chat.id, "作者 : *{}*，無相關資料".format(author_data['name']),parse_mode="Markdown") # author has no link
             
             msgstr = "*{}*\n".format(author_data['name'])
             for item in links:
@@ -75,7 +75,7 @@ def author(message,text):
 def circle(message,text):
     circle_data = searchCircle(text)
     if circle_data == None:
-        bot.sendMessage(message.chat.id, "找不到社團 : *{}*".format(text),parse_mode="Markdown")
+        bot.sendMessage(message.chat.id, "找不到社團 : *{}*".format(text),parse_mode="Markdown") # can't find circle
     elif 'error' in circle_data:
         bot.sendMessage(message.chat.id,"Error : {}".format(circle_data['error']))
     else:
@@ -83,7 +83,7 @@ def circle(message,text):
         if 'error' in links:
             bot.sendMessage(message.chat.id,"Error : {}".format(links['error']))
         else:
-            msgstr = "*{}*\n成員 : ".format(circle_data['name'])
+            msgstr = "*{}*\n成員 : ".format(circle_data['name']) # member
             for member in circle_data['member']:
                 msgstr += member+" "
             msgstr += "\n"
@@ -97,32 +97,32 @@ def book(message,text):
     kings_res = list(search_kings(keyword))
     taaze_res = list(search_taaze(keyword))
     if len(books_res)>0:
-        result = parse_book_result(books_res,"*－博客來－*\n")
+        result = parse_book_result(books_res,"*－博客來－*\n") # books
         bot.sendMessage(message.chat.id,result,parse_mode="Markdown",disable_web_page_preview=True)
     else:
-        bot.sendMessage(message.chat.id,"博客來查無結果")
+        bot.sendMessage(message.chat.id,"博客來查無結果") # no result
     if len(kings_res)>0:
-        result = parse_book_result(kings_res,"*－金石堂－*\n")
+        result = parse_book_result(kings_res,"*－金石堂－*\n") # kingstone
         bot.sendMessage(message.chat.id,result,parse_mode="Markdown",disable_web_page_preview=True)
     else:
-        bot.sendMessage(message.chat.id,"金石堂查無結果")
+        bot.sendMessage(message.chat.id,"金石堂查無結果") # no result
     if len(taaze_res)>0:
-        result = parse_book_result(taaze_res,"*－讀冊－*\n")
+        result = parse_book_result(taaze_res,"*－讀冊－*\n") # taaze
         bot.sendMessage(message.chat.id,result,parse_mode="Markdown",disable_web_page_preview=True)
     else:
-        bot.sendMessage(message.chat.id,"讀冊查無結果")
+        bot.sendMessage(message.chat.id,"讀冊查無結果") # no result
 
 def huolu(message):
     result = searchRecommendHentai()
     if result == None:
-        bot.sendMessage(message.chat.id,"沒有活路")
+        bot.sendMessage(message.chat.id,"沒有活路") # no result
     elif 'error' in result:
         bot.sendMessage(message.chat.id,"Error : {}".format(result['error']))
     else:
         try:
             bot.sendPhoto(message.chat.id,photo=result['thumb'],caption='{}\n{}'.format(result['title'],result['link']))
         except:
-            bot.sendMessage(message.chat.id,"活路不通 : telegram api timeout")
+            bot.sendMessage(message.chat.id,"活路不通 : telegram api timeout") # error
         
 
 # home
