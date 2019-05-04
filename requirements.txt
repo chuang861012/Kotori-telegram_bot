@@ -1,0 +1,7 @@
+Flask
+requests
+uwsgi
+lxml
+python-telegram-bot
+chatterbot
+psycopg2
