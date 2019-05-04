@@ -26,7 +26,7 @@ class Hentai:
             return {'error':'web response error'}
         content = res.content.decode()
         html = etree.HTML(content)
-        nodes = html.xpath('//div[contains(@class,"glname")]//a')
+        nodes = html.xpath('//*[contains(@class,"glink")]/..')
         next_page = html.xpath(
             '/html/body//tr/td/a[contains(text(),">")]/@href')
         return {'nodes':nodes,'next_page':next_page}
